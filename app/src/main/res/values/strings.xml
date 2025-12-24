@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">EduConnect</string>
+    <string name="welcome">Welcome to EduConnect</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="assignment_title">Assignment title</string>
+    <string name="assignment_description">Description</string>
+    <string name="assignment_deadline">Deadline</string>
+    <string name="assignment_completed">Completed</string>
+    <string name="save_assignment">Save Assignment</string>
+    <string name="delete">Delete</string>
+
+</resources>
