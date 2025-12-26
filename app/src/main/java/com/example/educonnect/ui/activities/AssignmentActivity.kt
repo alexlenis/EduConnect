@@ -3,29 +3,28 @@ package com.example.educonnect.ui.activities
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import com.example.educonnect.R
-import com.example.educonnect.data.database.AppDatabase
 import com.example.educonnect.data.entity.Assignment
-import kotlinx.coroutines.launch
+import com.example.educonnect.ui.viewmodel.AssignmentViewModel
 
 class AssignmentActivity : AppCompatActivity() {
 
-    private lateinit var db: AppDatabase
+    private lateinit var viewModel: AssignmentViewModel
     private var editingAssignment: Assignment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment)
 
-        db = AppDatabase.getDatabase(this)
+        viewModel = ViewModelProvider(this)[AssignmentViewModel::class.java]
 
         val etTitle = findViewById<EditText>(R.id.etTitle)
         val etDescription = findViewById<EditText>(R.id.etDescription)
         val cbCompleted = findViewById<CheckBox>(R.id.cbCompleted)
         val btnSave = findViewById<Button>(R.id.btnSaveAssignment)
 
-        // Αν ήρθαμε για UPDATE
+        // UPDATE (αν υπάρχει)
         editingAssignment = intent.getSerializableExtra("assignment") as? Assignment
         editingAssignment?.let {
             etTitle.setText(it.title)
@@ -42,34 +41,27 @@ class AssignmentActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            lifecycleScope.launch {
-                if (editingAssignment == null) {
-                    // INSERT
-                    val assignment = Assignment(
-                        title = title,
-                        description = description,
-                        dueDate = System.currentTimeMillis(),
-                        completed = cbCompleted.isChecked,
-                        subjectId = 1
-                    )
-                    db.assignmentDao().insert(assignment)
-                    Toast.makeText(this@AssignmentActivity, "Saved", Toast.LENGTH_SHORT).show()
-                } else {
-                    // UPDATE
-                    val updated = editingAssignment!!.copy(
-                        title = title,
-                        description = description,
-                        completed = cbCompleted.isChecked
-                    )
-                    db.assignmentDao().update(updated)
-                    Toast.makeText(this@AssignmentActivity, "Updated", Toast.LENGTH_SHORT).show()
-                }
-
-                etTitle.text.clear()
-                etDescription.text.clear()
-                cbCompleted.isChecked = false
-                editingAssignment = null
+            if (editingAssignment == null) {
+                val assignment = Assignment(
+                    title = title,
+                    description = description,
+                    dueDate = System.currentTimeMillis(),
+                    completed = cbCompleted.isChecked,
+                    subjectId = 1
+                )
+                viewModel.insert(assignment)
+                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
+            } else {
+                val updated = editingAssignment!!.copy(
+                    title = title,
+                    description = description,
+                    completed = cbCompleted.isChecked
+                )
+                viewModel.update(updated)
+                Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show()
             }
+
+            finish()
         }
     }
 }

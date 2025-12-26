@@ -54,8 +54,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_subjects ->
                     startActivity(Intent(this, SubjectActivity::class.java))
 
+                // 🔥 ΕΔΩ Η ΔΙΟΡΘΩΣΗ
                 R.id.nav_assignments ->
-                    startActivity(Intent(this, AssignmentActivity::class.java))
+                    startActivity(Intent(this, AssignmentListActivity::class.java))
 
                 R.id.nav_grades ->
                     startActivity(Intent(this, GradesActivity::class.java))

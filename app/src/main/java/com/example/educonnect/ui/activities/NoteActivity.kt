@@ -1,13 +1,20 @@
 package com.example.educonnect.ui.activities
 
+import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +23,9 @@ import com.example.educonnect.data.database.AppDatabase
 import com.example.educonnect.data.entity.Note
 import com.example.educonnect.ui.adapters.NoteAdapter
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
 
 class NoteActivity : AppCompatActivity() {
 
@@ -23,10 +33,13 @@ class NoteActivity : AppCompatActivity() {
     private lateinit var adapter: NoteAdapter
 
     private var selectedImagePath: String? = null
+    private var editingNote: Note? = null
 
     companion object {
         private const val REQUEST_CAMERA = 100
         private const val REQUEST_GALLERY = 101
+        private const val PERMISSION_CAMERA = 200
+        private const val PERMISSION_GALLERY = 201
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,13 +48,34 @@ class NoteActivity : AppCompatActivity() {
 
         db = AppDatabase.getDatabase(this)
 
-        val etNoteText = findViewById<EditText>(R.id.etNoteText)
+        val etText = findViewById<EditText>(R.id.etNoteText)
         val btnSave = findViewById<Button>(R.id.btnSaveNote)
         val btnCamera = findViewById<Button>(R.id.btnCamera)
         val btnGallery = findViewById<Button>(R.id.btnGallery)
         val recycler = findViewById<RecyclerView>(R.id.recyclerNotes)
 
-        adapter = NoteAdapter(emptyList())
+        adapter = NoteAdapter(
+            notes = emptyList(),
+            onUpdate = { note ->
+                editingNote = note
+                etText.setText(note.text)
+                selectedImagePath = note.imagePath
+            },
+            onDelete = { note ->
+                AlertDialog.Builder(this)
+                    .setTitle("Delete note")
+                    .setMessage("Are you sure?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        lifecycleScope.launch {
+                            db.noteDao().delete(note)
+                            loadNotes()
+                        }
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            }
+        )
+
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
 
@@ -49,59 +83,150 @@ class NoteActivity : AppCompatActivity() {
 
         // 📸 CAMERA
         btnCamera.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, REQUEST_CAMERA)
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.CAMERA),
+                    PERMISSION_CAMERA
+                )
+            } else {
+                openCamera()
+            }
         }
 
         // 🖼️ GALLERY
         btnGallery.setOnClickListener {
-            val intent = Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            )
-            startActivityForResult(intent, REQUEST_GALLERY)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                        PERMISSION_GALLERY
+                    )
+                } else {
+                    openGallery()
+                }
+            } else {
+                openGallery()
+            }
         }
 
-        // 💾 SAVE NOTE
+        // 💾 SAVE
         btnSave.setOnClickListener {
-            val note = Note(
-                subjectId = 1, // προσωρινό
-                text = etNoteText.text.toString(),
-                imagePath = selectedImagePath,
-                createdAt = System.currentTimeMillis()
-            )
+            val text = etText.text.toString().trim()
+
+            if (text.isEmpty()) {
+                Toast.makeText(this, "Text required", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             lifecycleScope.launch {
-                db.noteDao().insert(note)
-                etNoteText.text.clear()
+                if (editingNote == null) {
+                    db.noteDao().insert(
+                        Note(
+                            subjectId = 1,
+                            text = text,
+                            imagePath = selectedImagePath,
+                            createdAt = System.currentTimeMillis()
+                        )
+                    )
+                } else {
+                    db.noteDao().update(
+                        editingNote!!.copy(
+                            text = text,
+                            imagePath = selectedImagePath
+                        )
+                    )
+                    editingNote = null
+                }
+
+                etText.text.clear()
                 selectedImagePath = null
                 loadNotes()
             }
         }
     }
 
+    // ---------- CAMERA ----------
+    private fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, REQUEST_CAMERA)
+    }
+
+    // ---------- GALLERY ----------
+    private fun openGallery() {
+        val intent = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
+        startActivityForResult(intent, REQUEST_GALLERY)
+    }
+
+    // ---------- PERMISSIONS ----------
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        when (requestCode) {
+            PERMISSION_CAMERA -> openCamera()
+            PERMISSION_GALLERY -> openGallery()
+        }
+    }
+
+    // ---------- RESULT ----------
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode != Activity.RESULT_OK) return
+        if (resultCode != Activity.RESULT_OK || data == null) return
 
         when (requestCode) {
+
             REQUEST_CAMERA -> {
-                // απλό requirement coverage – αποθηκεύουμε placeholder
-                selectedImagePath = "camera_image"
+                val bitmap = data.extras?.get("data") as? Bitmap ?: return
+                selectedImagePath = saveBitmapToCache(bitmap)
             }
 
             REQUEST_GALLERY -> {
-                val uri: Uri? = data?.data
-                selectedImagePath = uri?.toString()
+                val uri = data.data ?: return
+                val inputStream = contentResolver.openInputStream(uri) ?: return
+
+                val file = File(cacheDir, "note_${UUID.randomUUID()}.jpg")
+                FileOutputStream(file).use { output ->
+                    inputStream.copyTo(output)
+                }
+
+                selectedImagePath = file.absolutePath
             }
         }
     }
 
+    // ---------- SAVE BITMAP ----------
+    private fun saveBitmapToCache(bitmap: Bitmap): String {
+        val file = File(cacheDir, "note_${UUID.randomUUID()}.jpg")
+        FileOutputStream(file).use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+        }
+        return file.absolutePath
+    }
+
+    // ---------- LOAD ----------
     private fun loadNotes() {
         lifecycleScope.launch {
-            val notes = db.noteDao().getAllNotes()
-            adapter.updateData(notes)
+            adapter.updateData(db.noteDao().getAllNotes())
         }
     }
 }

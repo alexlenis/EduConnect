@@ -1,55 +1,74 @@
 package com.example.educonnect.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnect.R
-import com.example.educonnect.data.database.AppDatabase
+import com.example.educonnect.data.entity.Assignment
 import com.example.educonnect.ui.adapters.AssignmentAdapter
-import kotlinx.coroutines.launch
+import com.example.educonnect.ui.viewmodel.AssignmentViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class AssignmentListActivity : AppCompatActivity() {
 
-    private lateinit var db: AppDatabase
+    private lateinit var viewModel: AssignmentViewModel
     private lateinit var adapter: AssignmentAdapter
+    private val assignments = mutableListOf<Assignment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_list)
 
-        db = AppDatabase.getDatabase(this)
+        Log.d("ASSIGNMENT_DEBUG", "AssignmentListActivity OPENED")
 
-        val recycler = findViewById<RecyclerView>(R.id.recyclerAssignments)
-        recycler.layoutManager = LinearLayoutManager(this)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        viewModel = ViewModelProvider(this)[AssignmentViewModel::class.java]
 
         adapter = AssignmentAdapter(
-            emptyList(),
+            assignments = assignments,
+
+            // 🗑 DELETE με επιβεβαίωση
             onDelete = { assignment ->
-                lifecycleScope.launch {
-                    db.assignmentDao().delete(assignment)
-                    loadAssignments()
-                }
+                AlertDialog.Builder(this)
+                    .setTitle("Delete Assignment")
+                    .setMessage("Are you sure you want to delete this assignment?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        viewModel.delete(assignment)
+                        Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
             },
+
+            // ✏ UPDATE
             onUpdate = { assignment ->
-                lifecycleScope.launch {
-                    val updated = assignment.copy(
-                        title = assignment.title + " (updated)"
-                    )
-                    db.assignmentDao().update(updated)
-                    loadAssignments()
-                }
+                val intent = Intent(this, AssignmentActivity::class.java)
+                intent.putExtra("assignment", assignment)
+                startActivity(intent)
             }
         )
 
-        recycler.adapter = adapter
-        loadAssignments()
-    }
+        recyclerView.adapter = adapter
 
-    private fun loadAssignments() {
-        lifecycleScope.launch {
-            adapter.updateData(db.assignmentDao().getAllAssignments())
+        viewModel.assignments.observe(this) { list ->
+            Log.d("ASSIGNMENT_DEBUG", "OBSERVE CALLED - LIST SIZE = ${list.size}")
+            assignments.clear()
+            assignments.addAll(list)
+            adapter.notifyDataSetChanged()
+        }
+
+        fabAdd.setOnClickListener {
+            startActivity(Intent(this, AssignmentActivity::class.java))
         }
     }
 }

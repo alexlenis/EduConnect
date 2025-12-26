@@ -3,24 +3,24 @@ package com.example.educonnect.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnect.R
 import com.example.educonnect.data.entity.Subject
 
 class SubjectAdapter(
-    private var subjects: List<Subject>
+    private var subjects: List<Subject>,
+    private val onDelete: (Subject) -> Unit,
+    private val onUpdate: (Subject) -> Unit
 ) : RecyclerView.Adapter<SubjectAdapter.SubjectViewHolder>() {
 
-    fun updateData(newSubjects: List<Subject>) {
-        subjects = newSubjects
-        notifyDataSetChanged()
-    }
-
     inner class SubjectViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val name: TextView = view.findViewById(R.id.tvName)
+        val name: TextView = view.findViewById(R.id.tvSubjectName)
         val professor: TextView = view.findViewById(R.id.tvProfessor)
         val semester: TextView = view.findViewById(R.id.tvSemester)
+        val btnUpdate: Button = view.findViewById(R.id.btnUpdate)
+        val btnDelete: Button = view.findViewById(R.id.btnDelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubjectViewHolder {
@@ -31,10 +31,24 @@ class SubjectAdapter(
 
     override fun onBindViewHolder(holder: SubjectViewHolder, position: Int) {
         val subject = subjects[position]
+
         holder.name.text = subject.name
         holder.professor.text = subject.professor
         holder.semester.text = "Semester: ${subject.semester}"
+
+        holder.btnDelete.setOnClickListener {
+            onDelete(subject)
+        }
+
+        holder.btnUpdate.setOnClickListener {
+            onUpdate(subject)
+        }
     }
 
     override fun getItemCount() = subjects.size
+
+    fun updateData(newSubjects: List<Subject>) {
+        subjects = newSubjects
+        notifyDataSetChanged()
+    }
 }

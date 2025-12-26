@@ -8,15 +8,16 @@
     <!-- Camera / Gallery -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!-- Map / Location -->
+    <!-- Location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- Camera not required -->
+    <!-- Camera REQUIRED -->
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -27,63 +28,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EduConnect.AppCompat"
-        tools:targetApi="31">
+        tools:targetApi="34">
 
-        <!-- Google Maps API KEY -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="PUT_YOUR_GOOGLE_MAPS_API_KEY_HERE" />
-
-        <!-- MAIN -->
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.EduConnect.AppCompat">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- SUBJECTS -->
-        <activity
-            android:name=".ui.activities.SubjectActivity"
-            android:exported="false" />
-
-        <!-- ASSIGNMENTS -->
-        <activity
-            android:name=".ui.activities.AssignmentActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.activities.AssignmentListActivity"
-            android:exported="false" />
-
-        <!-- GRADES -->
-        <activity
-            android:name=".ui.activities.GradesActivity"
-            android:exported="false" />
-
-        <!-- NOTES -->
-        <activity
-            android:name=".ui.activities.NoteActivity"
-            android:exported="false" />
-
-        <!-- SETTINGS -->
-        <activity
-            android:name=".ui.activities.SettingsActivity"
-            android:exported="false" />
-
-        <!-- CALENDAR -->
-        <activity
-            android:name=".ui.activities.CalendarActivity"
-            android:exported="false" />
-
-        <!-- MAP -->
-        <activity
-            android:name=".ui.activities.MapActivity"
-            android:exported="false" />
+        <activity android:name=".ui.activities.SubjectActivity" />
+        <activity android:name=".ui.activities.AssignmentActivity" />
+        <activity android:name=".ui.activities.AssignmentListActivity" />
+        <activity android:name=".ui.activities.GradesActivity" />
+        <activity android:name=".ui.activities.NoteActivity" />
+        <activity android:name=".ui.activities.SettingsActivity" />
+        <activity android:name=".ui.activities.CalendarActivity" />
+        <activity android:name=".ui.activities.MapActivity" />
 
     </application>
-
 </manifest>
