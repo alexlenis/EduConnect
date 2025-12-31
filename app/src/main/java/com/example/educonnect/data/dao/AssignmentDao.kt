@@ -7,7 +7,7 @@ import com.example.educonnect.data.entity.Assignment
 @Dao
 interface AssignmentDao {
 
-    @Query("SELECT * FROM Assignment ORDER BY id DESC")
+    @Query("SELECT * FROM Assignment ORDER BY dueDate ASC")
     fun getAllAssignments(): LiveData<List<Assignment>>
 
     @Insert

@@ -4,14 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.educonnect.data.dao.AssignmentDao
-import com.example.educonnect.data.dao.GradeDao
-import com.example.educonnect.data.dao.NoteDao
-import com.example.educonnect.data.dao.SubjectDao
-import com.example.educonnect.data.entity.Assignment
-import com.example.educonnect.data.entity.Grade
-import com.example.educonnect.data.entity.Note
-import com.example.educonnect.data.entity.Subject
+import com.example.educonnect.data.dao.*
+import com.example.educonnect.data.entity.*
 
 @Database(
     entities = [
@@ -20,7 +14,7 @@ import com.example.educonnect.data.entity.Subject
         Grade::class,
         Note::class
     ],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -40,7 +34,10 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "educonnect_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration() // dev stage
+                    .build()
+
                 INSTANCE = instance
                 instance
             }

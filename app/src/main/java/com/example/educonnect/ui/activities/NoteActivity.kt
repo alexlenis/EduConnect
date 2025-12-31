@@ -5,16 +5,19 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,14 +28,16 @@ import com.example.educonnect.ui.adapters.NoteAdapter
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.util.UUID
 
 class NoteActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
     private lateinit var adapter: NoteAdapter
 
+    private lateinit var imgPreview: ImageView
+
     private var selectedImagePath: String? = null
+    private var cameraImagePath: String? = null
     private var editingNote: Note? = null
 
     companion object {
@@ -54,7 +59,11 @@ class NoteActivity : AppCompatActivity() {
         val btnGallery = findViewById<Button>(R.id.btnGallery)
         val recycler = findViewById<RecyclerView>(R.id.recyclerNotes)
 
+        imgPreview = findViewById(R.id.imgPreview)
+        imgPreview.visibility = View.GONE
+
         adapter = NoteAdapter(
+            activity = this,
             notes = emptyList(),
             onUpdate = { note ->
                 editingNote = note
@@ -117,7 +126,7 @@ class NoteActivity : AppCompatActivity() {
             }
         }
 
-        // 💾 SAVE
+        // 💾 SAVE NOTE
         btnSave.setOnClickListener {
             val text = etText.text.toString().trim()
 
@@ -148,14 +157,38 @@ class NoteActivity : AppCompatActivity() {
 
                 etText.text.clear()
                 selectedImagePath = null
+
+                // 🔹 κρύβουμε preview μετά το save
+                imgPreview.setImageDrawable(null)
+                imgPreview.visibility = View.GONE
+
                 loadNotes()
             }
         }
     }
 
-    // ---------- CAMERA ----------
+    // ---------- CAMERA (FULL RES) ----------
     private fun openCamera() {
+        val imagesDir = File(cacheDir, "images")
+        if (!imagesDir.exists()) imagesDir.mkdirs()
+
+        val imageFile = File(
+            imagesDir,
+            "note_camera_${System.currentTimeMillis()}.jpg"
+        )
+
+        cameraImagePath = imageFile.absolutePath
+
+        val imageUri = FileProvider.getUriForFile(
+            this,
+            "${packageName}.fileprovider",
+            imageFile
+        )
+
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+
         startActivityForResult(intent, REQUEST_CAMERA)
     }
 
@@ -191,36 +224,40 @@ class NoteActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode != Activity.RESULT_OK || data == null) return
+        if (resultCode != Activity.RESULT_OK) return
 
         when (requestCode) {
 
             REQUEST_CAMERA -> {
-                val bitmap = data.extras?.get("data") as? Bitmap ?: return
-                selectedImagePath = saveBitmapToCache(bitmap)
+                selectedImagePath = cameraImagePath
+
+                cameraImagePath?.let {
+                    val bitmap = BitmapFactory.decodeFile(it)
+                    imgPreview.setImageBitmap(bitmap)
+                    imgPreview.visibility = View.VISIBLE
+                }
             }
 
             REQUEST_GALLERY -> {
-                val uri = data.data ?: return
+                val uri = data?.data ?: return
                 val inputStream = contentResolver.openInputStream(uri) ?: return
 
-                val file = File(cacheDir, "note_${UUID.randomUUID()}.jpg")
+                val file = File(
+                    cacheDir,
+                    "note_gallery_${System.currentTimeMillis()}.jpg"
+                )
+
                 FileOutputStream(file).use { output ->
                     inputStream.copyTo(output)
                 }
 
                 selectedImagePath = file.absolutePath
+
+                val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                imgPreview.setImageBitmap(bitmap)
+                imgPreview.visibility = View.VISIBLE
             }
         }
-    }
-
-    // ---------- SAVE BITMAP ----------
-    private fun saveBitmapToCache(bitmap: Bitmap): String {
-        val file = File(cacheDir, "note_${UUID.randomUUID()}.jpg")
-        FileOutputStream(file).use {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
-        }
-        return file.absolutePath
     }
 
     // ---------- LOAD ----------

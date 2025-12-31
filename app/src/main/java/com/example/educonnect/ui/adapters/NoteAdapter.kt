@@ -1,5 +1,7 @@
 package com.example.educonnect.ui.adapters
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +12,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnect.R
 import com.example.educonnect.data.entity.Note
+import com.example.educonnect.ui.activities.FullscreenImageActivity
 import java.io.File
 
 class NoteAdapter(
+    private val activity: Activity,
     private var notes: List<Note>,
     private val onUpdate: (Note) -> Unit,
     private val onDelete: (Note) -> Unit
@@ -35,30 +39,31 @@ class NoteAdapter(
         val note = notes[position]
 
         holder.text.text = note.text
+        holder.image.visibility = View.GONE
+        holder.image.setImageBitmap(null)
+        holder.image.setOnClickListener(null)
 
-        // ---------- IMAGE ----------
-        if (!note.imagePath.isNullOrEmpty()) {
-            val file = File(note.imagePath)
-
+        val path = note.imagePath
+        if (!path.isNullOrEmpty()) {
+            val file = File(path)
             if (file.exists()) {
+
+                // ✅ ΑΞΙΟΠΙΣΤΟ LOAD
                 val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                 holder.image.setImageBitmap(bitmap)
                 holder.image.visibility = View.VISIBLE
-            } else {
-                holder.image.visibility = View.GONE
+
+                // 👉 Fullscreen
+                holder.image.setOnClickListener {
+                    val intent = Intent(activity, FullscreenImageActivity::class.java)
+                    intent.putExtra("image_path", path)
+                    activity.startActivity(intent)
+                }
             }
-        } else {
-            holder.image.visibility = View.GONE
         }
 
-        // ---------- BUTTONS ----------
-        holder.btnUpdate.setOnClickListener {
-            onUpdate(note)
-        }
-
-        holder.btnDelete.setOnClickListener {
-            onDelete(note)
-        }
+        holder.btnUpdate.setOnClickListener { onUpdate(note) }
+        holder.btnDelete.setOnClickListener { onDelete(note) }
     }
 
     override fun getItemCount(): Int = notes.size

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- TITLE -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Events"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- EVENTS LIST -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

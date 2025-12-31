@@ -3,8 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/colorBackground">
 
+    <!-- SUBJECT NAME -->
     <EditText
         android:id="@+id/etSubjectName"
         android:layout_width="match_parent"
@@ -12,8 +14,12 @@
         android:minHeight="48dp"
         android:padding="12dp"
         android:layout_marginBottom="8dp"
-        android:hint="Subject name" />
+        android:hint="Subject name"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/textSecondary"
+        android:backgroundTint="?attr/colorPrimary" />
 
+    <!-- PROFESSOR -->
     <EditText
         android:id="@+id/etProfessor"
         android:layout_width="match_parent"
@@ -21,8 +27,12 @@
         android:minHeight="48dp"
         android:padding="12dp"
         android:layout_marginBottom="8dp"
-        android:hint="Professor" />
+        android:hint="Professor"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/textSecondary"
+        android:backgroundTint="?attr/colorPrimary" />
 
+    <!-- SCHEDULE -->
     <EditText
         android:id="@+id/etSchedule"
         android:layout_width="match_parent"
@@ -30,31 +40,58 @@
         android:minHeight="48dp"
         android:padding="12dp"
         android:layout_marginBottom="8dp"
-        android:hint="Schedule" />
+        android:hint="Schedule"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/textSecondary"
+        android:backgroundTint="?attr/colorPrimary" />
 
+    <!-- SEMESTER -->
     <EditText
         android:id="@+id/etSemester"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
         android:padding="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:hint="Semester"
-        android:inputType="number" />
+        android:inputType="number"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/textSecondary"
+        android:backgroundTint="?attr/colorPrimary" />
 
+    <!-- DATE (LIKE ASSIGNMENTS) -->
+    <EditText
+        android:id="@+id/etSubjectDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:hint="Subject date (optional)"
+        android:focusable="false"
+        android:clickable="true"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/textSecondary"
+        android:backgroundTint="?attr/colorPrimary" />
+
+    <!-- SAVE BUTTON -->
     <Button
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
         android:padding="12dp"
-        android:text="Save Subject" />
+        android:text="Save Subject"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="@android:color/white" />
 
+    <!-- SUBJECT LIST -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSubjects"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="12dp" />
+        android:layout_marginTop="12dp"
+        android:background="@color/colorSurface" />
 
 </LinearLayout>

@@ -12,13 +12,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.educonnect.ui.activities.*
+import com.example.educonnect.ui.theme.ThemeHelper
 import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,11 +22,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // ✅ ΣΩΣΤΟ: περνάμε ΜΟΝΟ context
+        ThemeHelper.applyTheme(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         requestNotificationPermission()
-        fetchDailyQuote()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -54,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_subjects ->
                     startActivity(Intent(this, SubjectActivity::class.java))
 
-                // 🔥 ΕΔΩ Η ΔΙΟΡΘΩΣΗ
                 R.id.nav_assignments ->
                     startActivity(Intent(this, AssignmentListActivity::class.java))
 
@@ -90,24 +87,6 @@ class MainActivity : AppCompatActivity() {
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                     NOTIFICATION_PERMISSION_CODE
                 )
-            }
-        }
-    }
-
-    private fun fetchDailyQuote() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val client = OkHttpClient()
-                val request = Request.Builder()
-                    .url("https://type.fit/api/quotes")
-                    .build()
-
-                val response = client.newCall(request).execute()
-                val json = response.body()?.string() ?: return@launch
-                JSONArray(json)
-
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }

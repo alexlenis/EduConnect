@@ -1,9 +1,8 @@
 package com.example.educonnect.ui.activities
 
+import android.app.DatePickerDialog
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -16,12 +15,17 @@ import com.example.educonnect.ui.adapters.SubjectAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.*
 
 class SubjectActivity : AppCompatActivity() {
 
     private lateinit var adapter: SubjectAdapter
     private lateinit var db: AppDatabase
     private var editingSubject: Subject? = null
+
+    private var selectedDateMillis: Long? = null
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("el"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +40,17 @@ class SubjectActivity : AppCompatActivity() {
         val etProfessor = findViewById<EditText>(R.id.etProfessor)
         val etSchedule = findViewById<EditText>(R.id.etSchedule)
         val etSemester = findViewById<EditText>(R.id.etSemester)
+        val etDate = findViewById<EditText>(R.id.etSubjectDate)
         val btnSave = findViewById<Button>(R.id.btnSave)
+
+        etDate.isFocusable = false
+        etDate.setOnClickListener {
+            openDatePicker(etDate)
+        }
 
         adapter = SubjectAdapter(
             emptyList(),
 
-            // 🗑 DELETE με confirmation
             onDelete = { subject ->
                 AlertDialog.Builder(this)
                     .setTitle("Delete Subject")
@@ -56,18 +65,21 @@ class SubjectActivity : AppCompatActivity() {
                     .show()
             },
 
-            // ✏ UPDATE
             onUpdate = { subject ->
                 editingSubject = subject
                 etName.setText(subject.name)
                 etProfessor.setText(subject.professor)
                 etSchedule.setText(subject.schedule)
                 etSemester.setText(subject.semester.toString())
+
+                selectedDateMillis = subject.dateMillis
+                etDate.setText(
+                    subject.dateMillis?.let { dateFormat.format(Date(it)) } ?: ""
+                )
             }
         )
 
         recyclerView.adapter = adapter
-
         loadSubjects()
 
         btnSave.setOnClickListener {
@@ -83,32 +95,52 @@ class SubjectActivity : AppCompatActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 if (editingSubject == null) {
-                    // INSERT
                     db.subjectDao().insert(
                         Subject(
                             name = name,
                             professor = professor,
                             schedule = schedule,
-                            semester = semester.toInt()
+                            semester = semester.toInt(),
+                            dateMillis = selectedDateMillis
                         )
                     )
                 } else {
-                    // UPDATE
                     db.subjectDao().update(
                         editingSubject!!.copy(
                             name = name,
                             professor = professor,
                             schedule = schedule,
-                            semester = semester.toInt()
+                            semester = semester.toInt(),
+                            dateMillis = selectedDateMillis
                         )
                     )
                     editingSubject = null
                 }
 
-                clearFields(etName, etProfessor, etSchedule, etSemester)
+                clearFields(etName, etProfessor, etSchedule, etSemester, etDate)
                 loadSubjects()
             }
         }
+    }
+
+    private fun openDatePicker(et: EditText) {
+        val cal = Calendar.getInstance()
+        selectedDateMillis?.let { cal.timeInMillis = it }
+
+        DatePickerDialog(
+            this,
+            { _, y, m, d ->
+                val picked = Calendar.getInstance().apply {
+                    set(y, m, d, 0, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                selectedDateMillis = picked.timeInMillis
+                et.setText(dateFormat.format(picked.time))
+            },
+            cal.get(Calendar.YEAR),
+            cal.get(Calendar.MONTH),
+            cal.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     private fun loadSubjects() {
@@ -120,17 +152,10 @@ class SubjectActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun clearFields(
-        etName: EditText,
-        etProfessor: EditText,
-        etSchedule: EditText,
-        etSemester: EditText
-    ) {
+    private suspend fun clearFields(vararg fields: EditText) {
         withContext(Dispatchers.Main) {
-            etName.text.clear()
-            etProfessor.text.clear()
-            etSchedule.text.clear()
-            etSemester.text.clear()
+            fields.forEach { it.text.clear() }
+            selectedDateMillis = null
         }
     }
 }

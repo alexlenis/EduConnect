@@ -5,9 +5,57 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <CalendarView
-        android:id="@+id/calendarView"
+    <!-- Header -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="12dp">
 
+        <ImageButton
+            android:id="@+id/btnPrev"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_media_previous"/>
+
+        <TextView
+            android:id="@+id/tvMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Μήνας"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="16dp"/>
+
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_media_next"/>
+    </LinearLayout>
+
+    <!-- Days Header -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="7"
+        android:layout_marginBottom="8dp">
+
+        <TextView android:text="Δ"/>
+        <TextView android:text="Τ"/>
+        <TextView android:text="Τ"/>
+        <TextView android:text="Π"/>
+        <TextView android:text="Π"/>
+        <TextView android:text="Σ"/>
+        <TextView android:text="Κ"/>
+    </GridLayout>
+
+    <!-- Calendar Grid -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendarRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

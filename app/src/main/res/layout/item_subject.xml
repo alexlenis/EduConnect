@@ -1,25 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:padding="12dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/colorSurface">
 
     <TextView
         android:id="@+id/tvSubjectName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="16sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textColor="@color/textPrimary" />
 
     <TextView
         android:id="@+id/tvProfessor"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/textSecondary" />
 
     <TextView
         android:id="@+id/tvSemester"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/textSecondary" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -32,15 +39,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Update" />
+            android:text="Update"
+            android:backgroundTint="?attr/colorPrimary"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btnDelete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Delete" />
+            android:layout_marginStart="8dp"
+            android:text="Delete"
+            android:backgroundTint="?attr/colorPrimary"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
 </LinearLayout>
-

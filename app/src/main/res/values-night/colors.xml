@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- PRIMARY -->
+    <color name="colorPrimary">#2DD4BF</color>
+    <color name="colorPrimaryVariant">#14B8A6</color>
+
+    <!-- BACKGROUND / SURFACE -->
+    <color name="colorBackground">#020617</color>
+    <color name="colorSurface">#0F172A</color>
+
+    <!-- TEXT -->
+    <color name="textPrimary">#F8FAFC</color>
+    <color name="textSecondary">#CBD5E1</color>
+
+    <!-- DIVIDER -->
+    <color name="divider">#1E293B</color>
+    <color name="calendar_day_text">#FFFFFF</color>
+
+
+</resources>

@@ -3,13 +3,17 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
 
     <EditText
         android:id="@+id/etNoteText"
-        android:hint="Note text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="Note text"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/textSecondary"
+        android:backgroundTint="?attr/colorPrimary"/>
 
     <!-- IMAGE PREVIEW -->
     <ImageView
@@ -18,29 +22,37 @@
         android:layout_height="180dp"
         android:layout_marginTop="12dp"
         android:scaleType="centerCrop"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:background="@color/colorSurface"/>
 
     <Button
         android:id="@+id/btnSaveNote"
-        android:text="Save Note"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Save Note"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="@android:color/white"/>
 
     <Button
         android:id="@+id/btnCamera"
-        android:text="Take Photo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Take Photo"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="@android:color/white"/>
 
     <Button
         android:id="@+id/btnGallery"
-        android:text="Pick from Gallery"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Pick from Gallery"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="@android:color/white"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerNotes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:background="@color/colorSurface"/>
 </LinearLayout>

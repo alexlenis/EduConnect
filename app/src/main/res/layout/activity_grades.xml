@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/colorBackground">
 
     <!-- EMPTY STATE (φατσούλα + κείμενο στο κέντρο) -->
     <LinearLayout
@@ -19,6 +20,7 @@
             android:layout_height="wrap_content"
             android:text="😟"
             android:textSize="64sp"
+            android:textColor="@color/textSecondary"
             android:layout_marginBottom="12dp" />
 
         <TextView
@@ -27,7 +29,8 @@
             android:layout_height="wrap_content"
             android:text="No new grades"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/textPrimary" />
     </LinearLayout>
 
     <!-- GRADES LIST -->
