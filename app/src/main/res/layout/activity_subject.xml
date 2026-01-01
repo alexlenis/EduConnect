@@ -3,95 +3,83 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@color/colorBackground">
+    android:padding="16dp">
 
-    <!-- SUBJECT NAME -->
     <EditText
         android:id="@+id/etSubjectName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"
-        android:hint="Subject name"
-        android:textColor="@color/textPrimary"
-        android:textColorHint="@color/textSecondary"
-        android:backgroundTint="?attr/colorPrimary" />
+        android:hint="Subject name" />
 
-    <!-- PROFESSOR -->
     <EditText
         android:id="@+id/etProfessor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"
         android:hint="Professor"
-        android:textColor="@color/textPrimary"
-        android:textColorHint="@color/textSecondary"
-        android:backgroundTint="?attr/colorPrimary" />
+        android:layout_marginTop="8dp"/>
 
-    <!-- SCHEDULE -->
     <EditText
         android:id="@+id/etSchedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"
         android:hint="Schedule"
-        android:textColor="@color/textPrimary"
-        android:textColorHint="@color/textSecondary"
-        android:backgroundTint="?attr/colorPrimary" />
+        android:layout_marginTop="8dp"/>
 
-    <!-- SEMESTER -->
     <EditText
         android:id="@+id/etSemester"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"
         android:hint="Semester"
         android:inputType="number"
-        android:textColor="@color/textPrimary"
-        android:textColorHint="@color/textSecondary"
-        android:backgroundTint="?attr/colorPrimary" />
+        android:layout_marginTop="8dp"/>
 
-    <!-- DATE (LIKE ASSIGNMENTS) -->
     <EditText
         android:id="@+id/etSubjectDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:padding="12dp"
-        android:layout_marginBottom="12dp"
-        android:hint="Subject date (optional)"
+        android:hint="Date (optional)"
         android:focusable="false"
         android:clickable="true"
-        android:textColor="@color/textPrimary"
-        android:textColorHint="@color/textSecondary"
-        android:backgroundTint="?attr/colorPrimary" />
+        android:layout_marginTop="8dp"/>
 
-    <!-- SAVE BUTTON -->
+    <CheckBox
+        android:id="@+id/cbPlaceOnMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Place on map (optional)"
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:id="@+id/btnPickOnMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pick location on map"
+        android:layout_marginTop="6dp"
+        android:enabled="false"/>
+
+    <TextView
+        android:id="@+id/tvPickedLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No location selected"
+        android:layout_marginTop="6dp" />
+
     <Button
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:padding="12dp"
         android:text="Save Subject"
-        android:backgroundTint="?attr/colorPrimary"
-        android:textColor="@android:color/white" />
+        android:layout_marginTop="10dp"/>
 
-    <!-- SUBJECT LIST -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSubjects"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="12dp"
-        android:background="@color/colorSurface" />
-
+        android:layout_marginTop="12dp" />
 </LinearLayout>

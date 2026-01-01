@@ -14,6 +14,8 @@ data class Subject(
     val schedule: String,
     val semester: Int,
 
-    // ✅ ΝΕΟ – ημερομηνία όπως Assignment
-    val dateMillis: Long?
+    val dateMillis: Long?,
+
+    // ✅ optional σύνδεση με MapPlace
+    val mapPlaceId: Int? = null
 ) : Serializable

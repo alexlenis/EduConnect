@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- INTERNET (ΑΠΑΡΑΙΤΗΤΟ για Google Maps) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- Notifications (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
@@ -9,18 +12,16 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- Gallery / Images -->
-    <!-- Android 13+ -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <!-- Android 12 and below -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
-    <!-- Location -->
+    <!-- Location (ΟΚ να υπάρχουν, δεν κρασάρουν) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- Camera hardware (not strictly required, αλλά ΟΚ να υπάρχει) -->
+    <!-- Camera hardware -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -36,7 +37,12 @@
         android:theme="@style/Theme.EduConnect"
         tools:targetApi="34">
 
-        <!-- 🔑 FILE PROVIDER (ΑΠΑΡΑΙΤΗΤΟ για camera FULL RES) -->
+        <!-- GOOGLE MAPS API KEY -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD_reZ6FIO-R1Fk3E3rIYGC5DinQj6Q8HI" />
+
+        <!-- FILE PROVIDER (Camera full resolution) -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -47,7 +53,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- MAIN -->
+        <!-- MAIN ACTIVITY -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -57,13 +63,13 @@
             </intent-filter>
         </activity>
 
-        <!-- FULLSCREEN IMAGE VIEWER -->
+        <!-- FULLSCREEN IMAGE -->
         <activity
             android:name=".ui.activities.FullscreenImageActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
-        <!-- OTHER ACTIVITIES -->
+        <!-- APP ACTIVITIES -->
         <activity android:name=".ui.activities.SubjectActivity" />
         <activity android:name=".ui.activities.AssignmentActivity" />
         <activity android:name=".ui.activities.AssignmentListActivity" />
@@ -71,9 +77,11 @@
         <activity android:name=".ui.activities.NoteActivity" />
         <activity android:name=".ui.activities.SettingsActivity" />
         <activity android:name=".ui.activities.CalendarActivity" />
-        <activity android:name=".ui.activities.MapActivity" />
 
-
+        <!-- MAP -->
+        <activity
+            android:name=".ui.activities.MapActivity"
+            android:exported="false" />
 
     </application>
 </manifest>

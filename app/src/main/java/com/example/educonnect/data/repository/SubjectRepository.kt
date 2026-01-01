@@ -5,15 +5,18 @@ import com.example.educonnect.data.entity.Subject
 
 class SubjectRepository(private val subjectDao: SubjectDao) {
 
-    // παίρνει ΟΛΑ τα subjects
-    fun getAllSubjects() = subjectDao.getAllSubjects()
-
-    // insert (suspend)
-    suspend fun insert(subject: Subject) {
-        subjectDao.insert(subject)
+    suspend fun getAllSubjects(): List<Subject> {
+        return subjectDao.getAllSubjects()
     }
 
-    // delete
+    suspend fun insert(subject: Subject): Long {
+        return subjectDao.insert(subject)
+    }
+
+    suspend fun update(subject: Subject) {
+        subjectDao.update(subject)
+    }
+
     suspend fun delete(subject: Subject) {
         subjectDao.delete(subject)
     }
