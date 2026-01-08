@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -25,13 +25,12 @@ class NoteAdapter(
     class NoteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val text: TextView = view.findViewById(R.id.tvNoteText)
         val image: ImageView = view.findViewById(R.id.imgNote)
-        val btnUpdate: Button = view.findViewById(R.id.btnUpdate)
-        val btnDelete: Button = view.findViewById(R.id.btnDelete)
+        val btnUpdate: ImageButton = view.findViewById(R.id.btnUpdate)
+        val btnDelete: ImageButton = view.findViewById(R.id.btnDelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_note, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
         return NoteViewHolder(view)
     }
 
@@ -39,6 +38,7 @@ class NoteAdapter(
         val note = notes[position]
 
         holder.text.text = note.text
+
         holder.image.visibility = View.GONE
         holder.image.setImageBitmap(null)
         holder.image.setOnClickListener(null)
@@ -47,13 +47,10 @@ class NoteAdapter(
         if (!path.isNullOrEmpty()) {
             val file = File(path)
             if (file.exists()) {
-
-                // ✅ ΑΞΙΟΠΙΣΤΟ LOAD
                 val bitmap = BitmapFactory.decodeFile(file.absolutePath)
                 holder.image.setImageBitmap(bitmap)
                 holder.image.visibility = View.VISIBLE
 
-                // 👉 Fullscreen
                 holder.image.setOnClickListener {
                     val intent = Intent(activity, FullscreenImageActivity::class.java)
                     intent.putExtra("image_path", path)

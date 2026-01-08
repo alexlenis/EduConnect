@@ -8,14 +8,18 @@ import android.widget.*
 import com.example.educonnect.R
 import com.example.educonnect.data.database.AppDatabase
 import com.example.educonnect.data.entity.MapPlace
+import com.example.educonnect.data.entity.PlaceType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AddPlaceBottomSheet(
-    private val latitude: Double,
-    private val longitude: Double
+    private val lat: Double,
+    private val lng: Double,
+    private val place: MapPlace? = null,
+    private val onSaved: () -> Unit
 ) : BottomSheetDialogFragment() {
 
     override fun onCreateView(
@@ -30,39 +34,59 @@ class AddPlaceBottomSheet(
         val spinnerType = view.findViewById<Spinner>(R.id.spinnerType)
         val btnSave = view.findViewById<Button>(R.id.btnSave)
 
-        val types = listOf("OFFICE", "SECRETARIAT", "SUBJECT")
         spinnerType.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            types
+            listOf("OFFICE", "SECRETARIAT", "SUBJECT")
         )
 
+        // EDIT MODE
+        place?.let {
+            etTitle.setText(it.title)
+            etDescription.setText(it.description)
+            spinnerType.setSelection(it.type.ordinal)
+            btnSave.text = "Update"
+        }
+
         btnSave.setOnClickListener {
-            val title = etTitle.text.toString()
-            val description = etDescription.text.toString()
-            val type = spinnerType.selectedItem.toString()
+            val title = etTitle.text.toString().trim()
+            val description = etDescription.text.toString().trim()
 
             if (title.isBlank()) {
                 Toast.makeText(requireContext(), "Title required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val place = MapPlace(
-                title = title,
-                description = description,
-                latitude = latitude,
-                longitude = longitude,
-                type = type,
-                subjectId = null
-            )
+            val type = PlaceType.values()[spinnerType.selectedItemPosition]
 
             CoroutineScope(Dispatchers.IO).launch {
-                AppDatabase.getDatabase(requireContext())
-                    .mapPlaceDao()
-                    .insert(place)
-            }
+                val dao = AppDatabase.getDatabase(requireContext()).mapPlaceDao()
 
-            dismiss()
+                if (place == null) {
+                    dao.insert(
+                        MapPlace(
+                            title = title,
+                            description = description,
+                            latitude = lat,
+                            longitude = lng,
+                            type = type
+                        )
+                    )
+                } else {
+                    dao.update(
+                        place.copy(
+                            title = title,
+                            description = description,
+                            type = type
+                        )
+                    )
+                }
+
+                withContext(Dispatchers.Main) {
+                    onSaved()
+                    dismiss()
+                }
+            }
         }
 
         return view

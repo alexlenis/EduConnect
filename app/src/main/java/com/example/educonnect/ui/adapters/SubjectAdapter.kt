@@ -3,7 +3,7 @@ package com.example.educonnect.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnect.R
@@ -19,8 +19,8 @@ class SubjectAdapter(
         val name: TextView = view.findViewById(R.id.tvSubjectName)
         val professor: TextView = view.findViewById(R.id.tvProfessor)
         val semester: TextView = view.findViewById(R.id.tvSemester)
-        val btnUpdate: Button = view.findViewById(R.id.btnUpdate)
-        val btnDelete: Button = view.findViewById(R.id.btnDelete)
+        val btnUpdate: ImageButton = view.findViewById(R.id.btnUpdate)
+        val btnDelete: ImageButton = view.findViewById(R.id.btnDelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubjectViewHolder {
@@ -34,14 +34,14 @@ class SubjectAdapter(
 
         holder.name.text = subject.name
         holder.professor.text = subject.professor
-        holder.semester.text = "Semester: ${subject.semester}"
-
-        holder.btnDelete.setOnClickListener {
-            onDelete(subject)
-        }
+        holder.semester.text = "Semester ${subject.semester}"
 
         holder.btnUpdate.setOnClickListener {
             onUpdate(subject)
+        }
+
+        holder.btnDelete.setOnClickListener {
+            onDelete(subject)
         }
     }
 
