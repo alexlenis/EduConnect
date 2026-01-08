@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        // ✅ ΣΩΣΤΟ: περνάμε ΜΟΝΟ context
         ThemeHelper.applyTheme(this)
 
         super.onCreate(savedInstanceState)
@@ -49,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
+
                 R.id.nav_subjects ->
                     startActivity(Intent(this, SubjectActivity::class.java))
 

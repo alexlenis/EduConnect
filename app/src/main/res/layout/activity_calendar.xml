@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Header -->
+    <!-- HEADER (MONTH + ARROWS) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:id="@+id/tvMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Μήνας"
+            android:text="Ιανουάριος 2026"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginHorizontal="16dp"/>
@@ -37,23 +37,23 @@
             android:src="@android:drawable/ic_media_next"/>
     </LinearLayout>
 
-    <!-- Days Header -->
+    <!-- DAYS HEADER (PERFECT ALIGNMENT) -->
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="7"
         android:layout_marginBottom="8dp">
 
-        <TextView android:text="Δ"/>
-        <TextView android:text="Τ"/>
-        <TextView android:text="Τ"/>
-        <TextView android:text="Π"/>
-        <TextView android:text="Π"/>
-        <TextView android:text="Σ"/>
-        <TextView android:text="Κ"/>
+        <TextView style="@style/CalendarDayHeader" android:text="Δ"/>
+        <TextView style="@style/CalendarDayHeader" android:text="Τ"/>
+        <TextView style="@style/CalendarDayHeader" android:text="Τ"/>
+        <TextView style="@style/CalendarDayHeader" android:text="Π"/>
+        <TextView style="@style/CalendarDayHeader" android:text="Π"/>
+        <TextView style="@style/CalendarDayHeader" android:text="Σ"/>
+        <TextView style="@style/CalendarDayHeader" android:text="Κ"/>
     </GridLayout>
 
-    <!-- Calendar Grid -->
+    <!-- CALENDAR GRID -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendarRecycler"
         android:layout_width="match_parent"

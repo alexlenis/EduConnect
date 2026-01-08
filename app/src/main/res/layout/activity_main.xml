@@ -4,34 +4,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:layout_height="match_parent">
 
     <!-- MAIN CONTENT -->
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/colorBackground">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            app:title="@string/app_name"
-            app:titleTextColor="@color/textPrimary"/>
-
-        <TextView
-            android:id="@+id/tvWelcome"
+        <!-- BACKGROUND IMAGE -->
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/welcome"
-            android:textSize="18sp"
-            android:textColor="@color/textPrimary"/>
+            android:src="@drawable/welcome_bg"
+            android:scaleType="centerCrop"/>
 
-    </LinearLayout>
+        <!-- CONTENT -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- TOOLBAR -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                app:title="@string/app_name"
+                app:titleTextColor="@color/textPrimary"/>
+
+            <!-- SPACER (για να κατέβει το text) -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="120dp"/>
+
+            <!-- WELCOME TEXT -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#2F4F3A"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
     <!-- DRAWER -->
     <com.google.android.material.navigation.NavigationView

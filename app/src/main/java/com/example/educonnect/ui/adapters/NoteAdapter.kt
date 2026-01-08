@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnect.R
 import com.example.educonnect.data.entity.Note
@@ -27,18 +28,22 @@ class NoteAdapter(
         val image: ImageView = view.findViewById(R.id.imgNote)
         val btnUpdate: ImageButton = view.findViewById(R.id.btnUpdate)
         val btnDelete: ImageButton = view.findViewById(R.id.btnDelete)
+        val btnShare: ImageButton = view.findViewById(R.id.btnShare)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_note, parent, false)
         return NoteViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
 
+        // TEXT
         holder.text.text = note.text
 
+        // IMAGE
         holder.image.visibility = View.GONE
         holder.image.setImageBitmap(null)
         holder.image.setOnClickListener(null)
@@ -59,8 +64,65 @@ class NoteAdapter(
             }
         }
 
-        holder.btnUpdate.setOnClickListener { onUpdate(note) }
-        holder.btnDelete.setOnClickListener { onDelete(note) }
+        // EDIT
+        holder.btnUpdate.setOnClickListener {
+            onUpdate(note)
+        }
+
+        // DELETE
+        holder.btnDelete.setOnClickListener {
+            onDelete(note)
+        }
+
+        // SHARE (TEXT + IMAGE – COMPATIBLE)
+        holder.btnShare.setOnClickListener {
+
+            val shareText = """
+                📝 Note
+
+                ${note.text}
+
+                Shared from EduConnect
+            """.trimIndent()
+
+            val imagePath = note.imagePath
+
+            // 👉 ΑΝ ΥΠΑΡΧΕΙ ΕΙΚΟΝΑ
+            if (!imagePath.isNullOrEmpty()) {
+                val file = File(imagePath)
+
+                if (file.exists()) {
+                    val uri = FileProvider.getUriForFile(
+                        activity,
+                        "${activity.packageName}.fileprovider",
+                        file
+                    )
+
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "*/*"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                        clipData = android.content.ClipData.newRawUri("image", uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+
+                    activity.startActivity(
+                        Intent.createChooser(intent, "Share note via")
+                    )
+                }
+
+            } else {
+                // 👉 ΜΟΝΟ ΚΕΙΜΕΝΟ
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, shareText)
+                }
+
+                activity.startActivity(
+                    Intent.createChooser(intent, "Share note via")
+                )
+            }
+        }
     }
 
     override fun getItemCount(): Int = notes.size

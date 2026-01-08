@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnect.R
 import com.example.educonnect.data.database.AppDatabase
-import com.example.educonnect.data.entity.Note
 import com.example.educonnect.ui.adapters.NoteAdapter
 import com.example.educonnect.ui.bottomsheet.AddEditNoteBottomSheet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
