@@ -37,7 +37,7 @@ class SubjectActivity : AppCompatActivity() {
                 showDeleteDialog(subject)
             },
             onUpdate = { subject ->
-                // ✏️ EDIT -> ίδιο BottomSheet με γεμάτα πεδία
+
                 AddSubjectBottomSheet(
                     subject = subject,
                     onSaved = { loadSubjects() }

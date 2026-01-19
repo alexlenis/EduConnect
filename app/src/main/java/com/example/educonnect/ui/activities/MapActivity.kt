@@ -77,7 +77,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             ).show(supportFragmentManager, "AddPlace")
         }
 
-        // 📌 VIEW / EDIT / DELETE
+
         map.setOnMarkerClickListener { marker ->
             val place = marker.tag as? MapPlace ?: return@setOnMarkerClickListener true
             PlaceDetailsBottomSheet(

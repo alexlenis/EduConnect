@@ -41,7 +41,7 @@ class FullscreenImageActivity : AppCompatActivity() {
             return
         }
 
-        // ✅ ΠΡΑΓΜΑΤΙΚΟ deep zoom χωρίς blur (tile-based)
+
         ssiv.setImage(ImageSource.uri(Uri.fromFile(file)))
 
         // optional “nice” defaults
@@ -50,11 +50,7 @@ class FullscreenImageActivity : AppCompatActivity() {
         ssiv.setDoubleTapZoomScale(2.5f) // double-tap zoom
     }
 
-    /**
-     * ✅ Swipe down to dismiss χωρίς να χαλάμε pinch/zoom:
-     * Δεν βάζουμε onTouchListener στο view (που μπλοκάρει gestures).
-     * Απλά “παρατηρούμε” events σε επίπεδο Activity.
-     */
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
 
         when (ev.actionMasked) {
@@ -67,15 +63,14 @@ class FullscreenImageActivity : AppCompatActivity() {
             MotionEvent.ACTION_MOVE -> {
                 if (!tracking) return super.dispatchTouchEvent(ev)
 
-                // Μόνο όταν ΔΕΝ είμαστε zoomed (κοντά στο min scale)
-                // Στο SSIV δεν έχουμε "scale" public πάντα σταθερό, αλλά υπάρχει:
+
                 val isZoomed = ssiv.scale > ssiv.minScale + 0.01f
                 if (isZoomed) return super.dispatchTouchEvent(ev)
 
                 val dx = ev.rawX - downX
                 val dy = ev.rawY - downY
 
-                // Θέλουμε καθαρό swipe προς τα κάτω (dy μεγάλο, dx μικρό)
+
                 if (dy > 180 && abs(dy) > abs(dx) * 1.3f) {
                     finish()
                     overridePendingTransition(0, android.R.anim.fade_out)

@@ -15,6 +15,6 @@ data class MapPlace(
 
     val type: PlaceType,
 
-    // προαιρετικό link προς subject (αν είναι SUBJECT place)
+
     val subjectId: Int? = null
 )

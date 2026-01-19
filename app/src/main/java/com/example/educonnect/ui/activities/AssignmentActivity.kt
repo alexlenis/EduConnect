@@ -17,7 +17,7 @@ class AssignmentActivity : AppCompatActivity() {
     private lateinit var viewModel: AssignmentViewModel
     private var editingAssignment: Assignment? = null
 
-    // Θα κρατάει την επιλεγμένη ημερομηνία σε millis (αυτό μπαίνει στο dueDate)
+    // Θα κρατάει την επιλεγμένη ημερομηνία σε millis
     private var selectedDueDateMillis: Long? = null
 
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("el"))
@@ -34,7 +34,7 @@ class AssignmentActivity : AppCompatActivity() {
         val cbCompleted = findViewById<CheckBox>(R.id.cbCompleted)
         val btnSave = findViewById<Button>(R.id.btnSaveAssignment)
 
-        // Deadline: μην ανοίγει keyboard, θα ανοίγει date picker
+        //  ανοίγει date picker
         etDeadline.isFocusable = false
         etDeadline.isClickable = true
 
@@ -45,7 +45,7 @@ class AssignmentActivity : AppCompatActivity() {
             etDescription.setText(ass.description)
             cbCompleted.isChecked = ass.completed
 
-            // Φόρτωσε την υπάρχουσα ημερομηνία
+            // υπάρχουσα ημερομηνία
             val cal = Calendar.getInstance().apply {
                 timeInMillis = ass.dueDate
                 normalizeToMidnight()
@@ -88,7 +88,7 @@ class AssignmentActivity : AppCompatActivity() {
                 val updated = editingAssignment!!.copy(
                     title = title,
                     description = description,
-                    dueDate = dueDate, // ✅ update και το dueDate
+                    dueDate = dueDate,
                     completed = cbCompleted.isChecked
                 )
                 viewModel.update(updated)
@@ -102,7 +102,7 @@ class AssignmentActivity : AppCompatActivity() {
     private fun openDatePicker(etDeadline: EditText) {
         val base = Calendar.getInstance()
 
-        // Αν ήδη έχεις επιλέξει ημερομηνία, άνοιξε εκεί
+
         selectedDueDateMillis?.let {
             base.timeInMillis = it
         }

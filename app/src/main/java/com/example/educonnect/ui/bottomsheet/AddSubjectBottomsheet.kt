@@ -97,7 +97,7 @@ class AddSubjectBottomSheet(
             }
         }
 
-        // ===== DATE PICKER =====
+        // ===== DATE PICKER
         etDate.setOnClickListener {
             val cal = Calendar.getInstance()
             DatePickerDialog(
@@ -113,7 +113,7 @@ class AddSubjectBottomSheet(
             ).show()
         }
 
-        // ===== MAP =====
+        // ===== MAP
         cbPlace.setOnCheckedChangeListener { _, checked ->
             btnPick.isEnabled = checked
             if (!checked) {
@@ -132,7 +132,7 @@ class AddSubjectBottomSheet(
 
         btnCancel.setOnClickListener { dismiss() }
 
-        // ===== SAVE =====
+        // ===== SAVE
         btnSave.setOnClickListener {
             val name = etName.text.toString().trim()
             val semesterText = etSemester.text.toString().trim()
@@ -146,7 +146,7 @@ class AddSubjectBottomSheet(
 
                 var mapPlaceId: Int? = editingMapPlaceId
 
-                // ----- MAP PLACE -----
+                // ----- MAP PLACE
                 if (cbPlace.isChecked && pickedLat != null && pickedLng != null) {
 
                     // delete old if exists

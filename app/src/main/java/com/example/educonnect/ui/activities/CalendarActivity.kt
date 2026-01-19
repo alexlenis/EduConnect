@@ -48,13 +48,13 @@ class CalendarActivity : AppCompatActivity() {
             loadMonth(tvMonth, recycler)
         }
 
-        // 🔴 Assignments (LiveData)
+        // 🔴 Assignments
         db.assignmentDao().getAllAssignments().observe(this, Observer {
             assignments = it ?: emptyList()
             loadMonth(tvMonth, recycler)
         })
 
-        // 🔵 Subjects (μια φορά)
+        // 🔵 Subjects
         lifecycleScope.launch(Dispatchers.IO) {
             subjects = db.subjectDao().getAllSubjects()
             withContext(Dispatchers.Main) {
@@ -67,7 +67,7 @@ class CalendarActivity : AppCompatActivity() {
         tvMonth.text = monthFormat.format(calendar.time)
 
         recycler.adapter = CalendarAdapter(generateDays()) { model ->
-            // ✅ εδώ το fix: παίρνουμε Int από model.day
+
             val dayNumber = model.day ?: return@CalendarAdapter
             openDayBottomSheet(dayNumber)
         }

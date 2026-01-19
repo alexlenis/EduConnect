@@ -16,6 +16,6 @@ data class Subject(
 
     val dateMillis: Long?,
 
-    // ✅ optional σύνδεση με MapPlace
+
     val mapPlaceId: Int? = null
 ) : Serializable

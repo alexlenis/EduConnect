@@ -87,7 +87,7 @@ class NoteAdapter(
 
             val imagePath = note.imagePath
 
-            // 👉 ΑΝ ΥΠΑΡΧΕΙ ΕΙΚΟΝΑ
+
             if (!imagePath.isNullOrEmpty()) {
                 val file = File(imagePath)
 
@@ -112,7 +112,7 @@ class NoteAdapter(
                 }
 
             } else {
-                // 👉 ΜΟΝΟ ΚΕΙΜΕΝΟ
+
                 val intent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, shareText)
